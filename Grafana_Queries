@@ -1,0 +1,55 @@
+##This File Contains the Grafana Queries used to grapgh the data from PostgreSQL.
+
+##Shows bias voltage 
+SELECT 
+  timestamp AS "TIME",
+  bias_voltage AS "Bias Voltage (V)"
+FROM readings 
+ORDER BY timestamp DESC
+LIMIT 1;
+
+##Show Current
+SELECT
+  timestamp AS "TIME",
+  current AS "Current (A)"
+FROM readings 
+ORDER BY timestamp DESC
+LIMIT 1;
+
+##Shows current Power
+SELECT 
+  timestamp AS "TIME",              
+  power AS "Power (W)"
+FROM readings 
+ORDER BY timestamp DESC
+LIMIT 1;
+
+##Graphs Power VS. Time
+SELECT
+    timestamp AT TIME ZONE 'America/New_York' AS time,
+    power AS "Power (W)"
+FROM readings
+WHERE $__timeFilter(timestamp AT TIME ZONE 'America/New_York')
+ORDER BY timestamp;
+
+##Grapgs Current VS time
+SELECT 
+  timestamp AT TIME ZONE 'America/New_York' AS time,
+  current AS "Current (A)"
+FROM readings
+WHERE $__timeFilter(timestamp AT TIME ZONE 'America/New_York')
+ORDER BY timestamp;
+
+##Shows collected data values in a chart
+SELECT 
+  "timestamp" AT TIME ZONE 'America/New_York' as time,
+  ROUND(bias_voltage::numeric, 3) AS "Bias Voltage (V)",
+  ROUND(signal_rms::numeric, 4) AS "signal RMS (V)",
+  ROUND(current::numeric, 2) AS "Current (A)",
+  ROUND(power::numeric, 1) AS "Power (W)",
+  ROUND(energy::numeric, 6) AS "Energy (kwh)"
+FROM readings 
+ORDER BY "timestamp" DESC
+LIMIT 50;  
+
+#Shows
